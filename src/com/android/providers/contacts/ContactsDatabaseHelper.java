@@ -108,7 +108,7 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
      *   700-799 Jelly Bean
      * </pre>
      */
-    static final int DATABASE_VERSION = 707;
+    static final int DATABASE_VERSION = 708;
 
     private static final String DATABASE_NAME = "contacts2.db";
     private static final String DATABASE_PRESENCE = "presence_db";
@@ -948,7 +948,6 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
                 Contacts.PHOTO_ID + " INTEGER REFERENCES data(_id)," +
                 Contacts.PHOTO_FILE_ID + " INTEGER REFERENCES photo_files(_id)," +
                 Contacts.CUSTOM_RINGTONE + " TEXT," +
-                Contacts.CUSTOM_NOTIFICATION + " TEXT," +
                 Contacts.SEND_TO_VOICEMAIL + " INTEGER NOT NULL DEFAULT 0," +
                 Contacts.TIMES_CONTACTED + " INTEGER NOT NULL DEFAULT 0," +
                 Contacts.LAST_TIME_CONTACTED + " INTEGER," +
@@ -956,7 +955,8 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
                 Contacts.HAS_PHONE_NUMBER + " INTEGER NOT NULL DEFAULT 0," +
                 Contacts.LOOKUP_KEY + " TEXT," +
                 ContactsColumns.LAST_STATUS_UPDATE_ID + " INTEGER REFERENCES data(_id), " +
-                Contacts.CUSTOM_VIBRATION + " TEXT" +
+                Contacts.CUSTOM_VIBRATION + " TEXT," +
+                Contacts.CUSTOM_NOTIFICATION + " TEXT" +
         ");");
 
         db.execSQL("CREATE INDEX contacts_has_phone_index ON " + Tables.CONTACTS + " (" +
@@ -982,7 +982,6 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
                         RawContacts.AGGREGATION_MODE_DEFAULT + "," +
                 RawContactsColumns.AGGREGATION_NEEDED + " INTEGER NOT NULL DEFAULT 1," +
                 RawContacts.CUSTOM_RINGTONE + " TEXT," +
-                RawContacts.CUSTOM_NOTIFICATION + " TEXT," +
                 RawContacts.SEND_TO_VOICEMAIL + " INTEGER NOT NULL DEFAULT 0," +
                 RawContacts.TIMES_CONTACTED + " INTEGER NOT NULL DEFAULT 0," +
                 RawContacts.LAST_TIME_CONTACTED + " INTEGER," +
@@ -1002,7 +1001,8 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
                 RawContacts.SYNC2 + " TEXT, " +
                 RawContacts.SYNC3 + " TEXT, " +
                 RawContacts.SYNC4 + " TEXT, " +
-                RawContacts.CUSTOM_VIBRATION + " TEXT " +
+                RawContacts.CUSTOM_VIBRATION + " TEXT, " +
+                RawContacts.CUSTOM_NOTIFICATION + " TEXT " +
         ");");
 
         db.execSQL("CREATE INDEX raw_contacts_contact_id_index ON " + Tables.RAW_CONTACTS + " (" +
@@ -2427,146 +2427,10 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
             oldVersion = 707;
         }
 
-        if (oldVersion < 707) {
-            db.execSQL("ALTER TABLE " + Tables.CONTACTS + " RENAME TO " + Tables.CONTACTS + "OLD;");
-            db.execSQL("CREATE TABLE " + Tables.CONTACTS + " (" +
-                BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                Contacts.NAME_RAW_CONTACT_ID + " INTEGER REFERENCES raw_contacts(_id)," +
-                Contacts.PHOTO_ID + " INTEGER REFERENCES data(_id)," +
-                Contacts.PHOTO_FILE_ID + " INTEGER REFERENCES photo_files(_id)," +
-                Contacts.CUSTOM_RINGTONE + " TEXT," +
-                Contacts.CUSTOM_NOTIFICATION + " TEXT," +
-                Contacts.SEND_TO_VOICEMAIL + " INTEGER NOT NULL DEFAULT 0," +
-                Contacts.TIMES_CONTACTED + " INTEGER NOT NULL DEFAULT 0," +
-                Contacts.LAST_TIME_CONTACTED + " INTEGER," +
-                Contacts.STARRED + " INTEGER NOT NULL DEFAULT 0," +
-                Contacts.HAS_PHONE_NUMBER + " INTEGER NOT NULL DEFAULT 0," +
-                Contacts.LOOKUP_KEY + " TEXT," +
-                ContactsColumns.LAST_STATUS_UPDATE_ID + " INTEGER REFERENCES data(_id)" +
-            ");");
-            db.execSQL("INSERT INTO " + Tables.CONTACTS + " (" +
-                Contacts.NAME_RAW_CONTACT_ID + ", " +
-                Contacts.PHOTO_ID + ", " +
-                Contacts.PHOTO_FILE_ID + ", " +
-                Contacts.CUSTOM_RINGTONE + ", " +
-                Contacts.SEND_TO_VOICEMAIL + ", " +
-                Contacts.TIMES_CONTACTED + ", " +
-                Contacts.LAST_TIME_CONTACTED + ", " +
-                Contacts.STARRED + ", " +
-                Contacts.HAS_PHONE_NUMBER + ", " +
-                Contacts.LOOKUP_KEY + ", " +
-                ContactsColumns.LAST_STATUS_UPDATE_ID + ") " +
-                "SELECT " +
-                Contacts.NAME_RAW_CONTACT_ID + ", " +
-                Contacts.PHOTO_ID + ", " +
-                Contacts.PHOTO_FILE_ID + ", " +
-                Contacts.CUSTOM_RINGTONE + ", " +
-                Contacts.SEND_TO_VOICEMAIL + ", " +
-                Contacts.TIMES_CONTACTED + ", " +
-                Contacts.LAST_TIME_CONTACTED + ", " +
-                Contacts.STARRED + ", " +
-                Contacts.HAS_PHONE_NUMBER + ", " +
-                Contacts.LOOKUP_KEY + ", " +
-                ContactsColumns.LAST_STATUS_UPDATE_ID + " " +
-                "FROM " + Tables.CONTACTS + "OLD;");
-            db.execSQL("DROP TABLE " + Tables.CONTACTS + "OLD;");
-
-            db.execSQL("ALTER TABLE " + Tables.RAW_CONTACTS + " RENAME TO " + Tables.RAW_CONTACTS + "OLD;");
-            db.execSQL("CREATE TABLE " + Tables.RAW_CONTACTS + " (" +
-                RawContacts._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                RawContactsColumns.ACCOUNT_ID + " INTEGER REFERENCES " +
-                    Tables.ACCOUNTS + "(" + AccountsColumns._ID + ")," +
-                RawContacts.SOURCE_ID + " TEXT," +
-                RawContacts.RAW_CONTACT_IS_READ_ONLY + " INTEGER NOT NULL DEFAULT 0," +
-                RawContacts.VERSION + " INTEGER NOT NULL DEFAULT 1," +
-                RawContacts.DIRTY + " INTEGER NOT NULL DEFAULT 0," +
-                RawContacts.DELETED + " INTEGER NOT NULL DEFAULT 0," +
-                RawContacts.CONTACT_ID + " INTEGER REFERENCES contacts(_id)," +
-                RawContacts.AGGREGATION_MODE + " INTEGER NOT NULL DEFAULT " +
-                        RawContacts.AGGREGATION_MODE_DEFAULT + "," +
-                RawContactsColumns.AGGREGATION_NEEDED + " INTEGER NOT NULL DEFAULT 1," +
-                RawContacts.CUSTOM_RINGTONE + " TEXT," +
-                RawContacts.CUSTOM_NOTIFICATION + " TEXT," +
-                RawContacts.SEND_TO_VOICEMAIL + " INTEGER NOT NULL DEFAULT 0," +
-                RawContacts.TIMES_CONTACTED + " INTEGER NOT NULL DEFAULT 0," +
-                RawContacts.LAST_TIME_CONTACTED + " INTEGER," +
-                RawContacts.STARRED + " INTEGER NOT NULL DEFAULT 0," +
-                RawContacts.DISPLAY_NAME_PRIMARY + " TEXT," +
-                RawContacts.DISPLAY_NAME_ALTERNATIVE + " TEXT," +
-                RawContacts.DISPLAY_NAME_SOURCE + " INTEGER NOT NULL DEFAULT " +
-                        DisplayNameSources.UNDEFINED + "," +
-                RawContacts.PHONETIC_NAME + " TEXT," +
-                RawContacts.PHONETIC_NAME_STYLE + " TEXT," +
-                RawContacts.SORT_KEY_PRIMARY + " TEXT COLLATE " +
-                        ContactsProvider2.PHONEBOOK_COLLATOR_NAME + "," +
-                RawContacts.SORT_KEY_ALTERNATIVE + " TEXT COLLATE " +
-                        ContactsProvider2.PHONEBOOK_COLLATOR_NAME + "," +
-                RawContacts.NAME_VERIFIED + " INTEGER NOT NULL DEFAULT 0," +
-                RawContacts.SYNC1 + " TEXT, " +
-                RawContacts.SYNC2 + " TEXT, " +
-                RawContacts.SYNC3 + " TEXT, " +
-                RawContacts.SYNC4 + " TEXT " +
-            ");");
-            db.execSQL("INSERT INTO " + Tables.RAW_CONTACTS + " (" +
-                RawContacts._ID + ", " +
-                RawContactsColumns.ACCOUNT_ID + ", " +
-                RawContacts.SOURCE_ID + ", " +
-                RawContacts.RAW_CONTACT_IS_READ_ONLY + ", " +
-                RawContacts.VERSION + ", " +
-                RawContacts.DIRTY + ", " +
-                RawContacts.DELETED + ", " +
-                RawContacts.CONTACT_ID + ", " +
-                RawContacts.AGGREGATION_MODE + ", " +
-                RawContactsColumns.AGGREGATION_NEEDED + ", " +
-                RawContacts.CUSTOM_RINGTONE + ", " +
-                RawContacts.SEND_TO_VOICEMAIL + ", " +
-                RawContacts.TIMES_CONTACTED + ", " +
-                RawContacts.LAST_TIME_CONTACTED + ", " +
-                RawContacts.STARRED + ", " +
-                RawContacts.DISPLAY_NAME_PRIMARY + ", " +
-                RawContacts.DISPLAY_NAME_ALTERNATIVE + ", " +
-                RawContacts.DISPLAY_NAME_SOURCE + ", " +
-                RawContacts.PHONETIC_NAME + ", " +
-                RawContacts.PHONETIC_NAME_STYLE + ", " +
-                RawContacts.SORT_KEY_PRIMARY + ", " +
-                RawContacts.SORT_KEY_ALTERNATIVE + ", " +
-                RawContacts.NAME_VERIFIED + ", " +
-                RawContacts.SYNC1 + ", " +
-                RawContacts.SYNC2 + ", " +
-                RawContacts.SYNC3 + ", " +
-                RawContacts.SYNC4 + ") " +
-                "SELECT " +
-                RawContacts._ID + ", " +
-                RawContactsColumns.ACCOUNT_ID + ", " +
-                RawContacts.SOURCE_ID + ", " +
-                RawContacts.RAW_CONTACT_IS_READ_ONLY + ", " +
-                RawContacts.VERSION + ", " +
-                RawContacts.DIRTY + ", " +
-                RawContacts.DELETED + ", " +
-                RawContacts.CONTACT_ID + ", " +
-                RawContacts.AGGREGATION_MODE + ", " +
-                RawContactsColumns.AGGREGATION_NEEDED + ", " +
-                RawContacts.CUSTOM_RINGTONE + ", " +
-                RawContacts.SEND_TO_VOICEMAIL + ", " +
-                RawContacts.TIMES_CONTACTED + ", " +
-                RawContacts.LAST_TIME_CONTACTED + ", " +
-                RawContacts.STARRED + ", " +
-                RawContacts.DISPLAY_NAME_PRIMARY + ", " +
-                RawContacts.DISPLAY_NAME_ALTERNATIVE + ", " +
-                RawContacts.DISPLAY_NAME_SOURCE + ", " +
-                RawContacts.PHONETIC_NAME + ", " +
-                RawContacts.PHONETIC_NAME_STYLE + ", " +
-                RawContacts.SORT_KEY_PRIMARY + ", " +
-                RawContacts.SORT_KEY_ALTERNATIVE + ", " +
-                RawContacts.NAME_VERIFIED + ", " +
-                RawContacts.SYNC1 + ", " +
-                RawContacts.SYNC2 + ", " +
-                RawContacts.SYNC3 + ", " +
-                RawContacts.SYNC4 + " " +
-                "FROM " + Tables.RAW_CONTACTS + "OLD;");
-            db.execSQL("DROP TABLE " + Tables.RAW_CONTACTS + "OLD;");
-
-            oldVersion = 707;
+        if (oldVersion < 708) {
+            upgradeToVersion708(db);
+            upgradeViewsAndTriggers = true; 
+            oldVersion = 708;
         }
 
         if (upgradeViewsAndTriggers) {
@@ -3986,6 +3850,22 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(
                 "UPDATE " + Tables.RAW_CONTACTS +
                 "   SET " + RawContacts.CUSTOM_VIBRATION + "=NULL" +
+                " WHERE " + RawContacts._ID + " NOT NULL");
+    }
+
+    /* add custom notifications */
+    private void upgradeToVersion708(SQLiteDatabase db) {
+        db.execSQL("ALTER TABLE contacts ADD custom_notification TEXT DEFAULT NULL;");
+        db.execSQL("ALTER TABLE raw_contacts ADD custom_notification TEXT DEFAULT NULL;");
+        
+        db.execSQL(
+                "UPDATE " + Tables.CONTACTS +
+                "   SET " + Contacts.CUSTOM_NOTIFICATION + "=NULL" +
+                " WHERE " + Contacts._ID + " NOT NULL");
+        
+        db.execSQL(
+                "UPDATE " + Tables.RAW_CONTACTS +
+                "   SET " + RawContacts.CUSTOM_NOTIFICATION + "=NULL" +
                 " WHERE " + RawContacts._ID + " NOT NULL");
     }
 

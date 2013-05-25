@@ -1704,7 +1704,6 @@ public class ContactAggregator {
                         + AccountsColumns.CONCRETE_DATA_SET + ","
                         + RawContacts.SOURCE_ID + ","
                         + RawContacts.CUSTOM_RINGTONE + ","
-                        + RawContacts.CUSTOM_NOTIFICATION + ","
                         + RawContacts.SEND_TO_VOICEMAIL + ","
                         + RawContacts.LAST_TIME_CONTACTED + ","
                         + RawContacts.TIMES_CONTACTED + ","
@@ -1714,7 +1713,8 @@ public class ContactAggregator {
                         + DataColumns.CONCRETE_MIMETYPE_ID + ","
                         + Data.IS_SUPER_PRIMARY + ","
                         + Photo.PHOTO_FILE_ID + ","
-                        + RawContacts.CUSTOM_VIBRATION +
+                        + RawContacts.CUSTOM_VIBRATION + ","
+                        + RawContacts.CUSTOM_NOTIFICATION +
                 " FROM " + Tables.RAW_CONTACTS +
                 " JOIN " + Tables.ACCOUNTS + " ON ("
                     + AccountsColumns.CONCRETE_ID + "=" + RawContactsColumns.CONCRETE_ACCOUNT_ID
@@ -1768,8 +1768,8 @@ public class ContactAggregator {
                         + Contacts.STARRED + "=?, "
                         + Contacts.HAS_PHONE_NUMBER + "=?, "
                         + Contacts.LOOKUP_KEY + "=?, "
-                        + Contacts.CUSTOM_VIBRATION + "=? "
-                        + Contacts.CUSTOM_NOTIFICATION + "=?, " +
+                        + Contacts.CUSTOM_VIBRATION + "=?, "
+                        + Contacts.CUSTOM_NOTIFICATION + "=? " +
                 " WHERE " + Contacts._ID + "=?";
 
         String INSERT_SQL =
@@ -1786,7 +1786,7 @@ public class ContactAggregator {
                         + Contacts.LOOKUP_KEY + ", "
                         + Contacts.CUSTOM_VIBRATION + ", "
                         + Contacts.CUSTOM_NOTIFICATION + ") " +
-                " VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+                " VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
 
         int NAME_RAW_CONTACT_ID = 1;
         int PHOTO_ID = 2;

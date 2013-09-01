@@ -1766,7 +1766,7 @@ public class ContactAggregator {
                         + Contacts.HAS_PHONE_NUMBER + "=?, "
                         + Contacts.LOOKUP_KEY + "=?, "
                         + Contacts.CUSTOM_VIBRATION + "=?, "
-                        + Contacts.CUSTOM_NOTIFICATION + "=? "
+                        + Contacts.CUSTOM_NOTIFICATION + "=?, "
                         + Contacts.CONTACT_LAST_UPDATED_TIMESTAMP + "=? " +
                 " WHERE " + Contacts._ID + "=?";
 
@@ -1786,7 +1786,7 @@ public class ContactAggregator {
                         + Contacts.CUSTOM_NOTIFICATION + ", "
                         + Contacts.CONTACT_LAST_UPDATED_TIMESTAMP
                         + ") " +
-                " VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+                " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         int NAME_RAW_CONTACT_ID = 1;
         int PHOTO_ID = 2;

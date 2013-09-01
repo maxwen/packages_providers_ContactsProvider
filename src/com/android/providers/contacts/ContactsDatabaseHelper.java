@@ -16,7 +16,6 @@
 
 package com.android.providers.contacts;
 
-
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -977,9 +976,9 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
                 Contacts.STARRED + " INTEGER NOT NULL DEFAULT 0," +
                 Contacts.HAS_PHONE_NUMBER + " INTEGER NOT NULL DEFAULT 0," +
                 Contacts.LOOKUP_KEY + " TEXT," +
-                ContactsColumns.LAST_STATUS_UPDATE_ID + " INTEGER REFERENCES data(_id), " +
+                ContactsColumns.LAST_STATUS_UPDATE_ID + " INTEGER REFERENCES data(_id)," +
                 Contacts.CUSTOM_VIBRATION + " TEXT," +
-                Contacts.CUSTOM_NOTIFICATION + " TEXT" +
+                Contacts.CUSTOM_NOTIFICATION + " TEXT," +
                 Contacts.CONTACT_LAST_UPDATED_TIMESTAMP + " INTEGER" +
         ");");
 
@@ -4890,6 +4889,9 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
 
         try {
             for (int clusterId = 0; clusterId < strings.length; clusterId++) {
+                if (strings[clusterId] == null) {
+                    continue;
+                }
                 String[] names = strings[clusterId].split(",");
                 for (int j = 0; j < names.length; j++) {
                     String name = NameNormalizer.normalize(names[j]);

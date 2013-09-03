@@ -2485,12 +2485,14 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
         }
 
         if (oldVersion < 707) {
+            Log.d(TAG, "upgrade to 707");
             upgradeToVersion707(db);
             upgradeViewsAndTriggers = true;
             oldVersion = 707;
         }
 
         if (oldVersion < 708) {
+            Log.d(TAG, "upgrade to 708");
             // Sort keys, phonebook labels and buckets, and search keys have
             // changed so force a rebuild.
             upgradeToVersion708(db);
@@ -2498,6 +2500,7 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
             oldVersion = 708;
         }
         if (oldVersion < 709) {
+            Log.d(TAG, "upgrade to 709");
             // Added secondary locale phonebook labels; changed Japanese
             // and Chinese sort keys.
             upgradeLocaleSpecificData = true;
@@ -2505,6 +2508,9 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
         }
 
         if (oldVersion < 710) {
+            Log.d(TAG, "upgrade to 710");
+            // maxwen: we missed that in 4.2.2 :(
+            upgradeToVersion707(db);
             upgradeToVersion710(db);
             upgradeViewsAndTriggers = true;
             oldVersion = 710;
